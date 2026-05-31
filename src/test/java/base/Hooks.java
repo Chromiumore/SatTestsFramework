@@ -11,7 +11,7 @@ import io.restassured.RestAssured;
 public class Hooks extends BaseTest {
     private Scenario scenario;
 
-    @Before
+    @Before(order = 0)
     public void tearup(Scenario scenario) {
         RestAssured.baseURI = TestConfig.BASE_URL;
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
@@ -34,5 +34,29 @@ public class Hooks extends BaseTest {
 
             Allure.step("Status code " + lastResponse.getStatusCode());
         }
+    }
+
+    @Before("@first-in-constellation")
+    public void beforeConstellationScenario(Scenario scenario) {
+        requestBody = createSatelliteData(
+                "Test-1",
+                0.55,
+                2500
+        );
+        lastResponse = apiClient.post("/satellites", requestBody);
+        createdSatId = lastResponse.jsonPath().getLong("id");
+        createdEnergyId = lastResponse.jsonPath().getLong("energy.id");
+        requestId = createdEnergyId;
+    }
+
+    @After("@last-in-constellation")
+    public void afterConstellationScenario(Scenario scenario) {
+        lastResponse = apiClient.delete("/satellites/" + createdSatId);
+    }
+
+    @After("@constellation-create")
+    public void initConstellationId(Scenario scenario) {
+        createdConstellationId = lastResponse.jsonPath().getLong("id");
+        requestId = createdConstellationId;
     }
 }
