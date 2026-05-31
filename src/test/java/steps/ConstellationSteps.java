@@ -23,13 +23,13 @@ public class ConstellationSteps extends BaseTest {
     @Тогда("Проверим данные группировки в ответе")
     public static void checkConstellationResponseBody() {
         JsonPath json = lastResponse.jsonPath();
-        assertEquals(requestBody.get("name"), json.getString("name"));
+        assertEquals(requestBody.get("name"), json.getString("constellationName"));
         Allure.addAttachment("Response body", "application/json", lastResponse.asString());
     }
 
     @Когда("Отправим GET запрос с именем группировки для метода {string}")
     public static void sendGetRequestWithConstName(String endpoint) {
-        String name = lastResponse.jsonPath().getString("name");
+        String name = lastResponse.jsonPath().getString("constellationName");
         lastResponse = apiClient.get(endpoint + "/name/" + name);
         Allure.addAttachment("Response body", "application/json", lastResponse.asString());
     }
@@ -43,9 +43,11 @@ public class ConstellationSteps extends BaseTest {
     }
 
     @Тогда("Проверим, что группировка содержит спутник")
-    public static void checkConstellationHasSatellite(String endpoint) {
-        List<Map<String, ?>> satList = lastResponse.jsonPath().getList("books");
+    public static void checkConstellationHasSatellite() {
+        lastResponse = apiClient.get("/constellations/" + createdConstellationId);
+        List<Map<String, Object>> satList = lastResponse.jsonPath().getList("satellites");
         String satId = satList.getFirst().get("id").toString();
-        assertEquals(satId, requestBody.toString());
+        assertEquals(requestBody.get("satelliteId").toString(), satId);
+        Allure.addAttachment("Response body", "application/json", lastResponse.asString());
     }
 }
