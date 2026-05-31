@@ -70,11 +70,13 @@ public class Hooks extends BaseTest {
         createdSatId = lastResponse.jsonPath().getLong("id");
         createdEnergyId = lastResponse.jsonPath().getLong("energy.id");
         requestId = createdEnergyId;
+        satelliteName = lastResponse.jsonPath().getString("name");
 
         requestBody = new HashMap<>();
         requestBody.put("name", UUID.randomUUID().toString());
         lastResponse = apiClient.post("/constellations", requestBody);
         createdConstellationId = lastResponse.jsonPath().getLong("id");
+        constellationName = lastResponse.jsonPath().getString("constellationName");
 
         requestBody = new HashMap<>();
         requestBody.put("satelliteId", createdSatId);

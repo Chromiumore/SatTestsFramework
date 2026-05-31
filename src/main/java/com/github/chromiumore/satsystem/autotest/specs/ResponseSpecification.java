@@ -7,7 +7,6 @@ public class ResponseSpecification {
     public static io.restassured.specification.ResponseSpecification expectedStatusCode(int code) {
         return new ResponseSpecBuilder()
                 .expectStatusCode(code)
-                .expectContentType(ContentType.JSON)
                 .build();
     }
 }

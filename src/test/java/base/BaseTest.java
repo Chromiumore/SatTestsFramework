@@ -17,6 +17,8 @@ public class BaseTest {
     protected static Long createdSatId;
     protected static Long createdEnergyId;
     protected static Long createdConstellationId;
+    protected static String constellationName;
+    protected static String satelliteName;
 
     @BeforeAll
     static void setup() {
